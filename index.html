@@ -1,0 +1,379 @@
+
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FEYZO MLBB — Diamond Store</title>
+<style>
+:root{
+ --bg:#080c16;--panel:#111a2b;--panel2:#17243a;
+ --blue:#48aaff;--purple:#7655f5;--muted:#8998b3;
+ --line:#263752;--white:#f4f7ff;
+}
+*{box-sizing:border-box}
+body{
+ margin:0;background:var(--bg);color:var(--white);
+ font-family:Arial,sans-serif;padding-bottom:90px;
+}
+button,input{font:inherit}
+button{cursor:pointer}
+.wrap{max-width:720px;margin:auto;padding:16px}
+header{
+ display:flex;align-items:center;justify-content:space-between;
+ padding:8px 0 18px;
+}
+.logo{font-size:21px;font-weight:900;letter-spacing:.5px}
+.logo span{color:var(--blue)}
+.header-actions{display:flex;gap:9px}
+.icon-btn{
+ border:1px solid var(--line);background:var(--panel);
+ color:white;padding:10px 13px;border-radius:12px;
+}
+.hero{
+ background:linear-gradient(115deg,#152c50,#282052);
+ border:1px solid #344c79;border-radius:17px;
+ padding:18px;display:flex;align-items:center;
+ justify-content:space-between;gap:10px;
+}
+.hero small{color:#9fcaff;font-size:11px;letter-spacing:1.5px}
+.hero h2{font-size:21px;margin:9px 0 6px}
+.hero p{font-size:12px;color:#c0cce2;margin:0;line-height:1.5}
+.hero-art{font-size:49px;filter:drop-shadow(0 0 14px #4a9cff)}
+.section-title{
+ display:flex;justify-content:space-between;align-items:center;
+ margin:25px 0 12px;
+}
+.section-title h3{font-size:16px;margin:0}
+.muted{font-size:11px;color:var(--muted)}
+.search{
+ width:100%;background:var(--panel);border:1px solid var(--line);
+ border-radius:12px;padding:14px;color:white;outline:none;
+}
+.search:focus{border-color:var(--blue)}
+.regions{
+ display:flex;gap:8px;overflow-x:auto;padding-bottom:5px;
+ scrollbar-width:none;
+}
+.regions::-webkit-scrollbar{display:none}
+.region{
+ white-space:nowrap;background:var(--panel);
+ color:#b9c7df;border:1px solid var(--line);
+ border-radius:10px;padding:10px 14px;font-size:12px;
+}
+.region.active{background:#173c68;border-color:var(--blue);color:white}
+.tabs{display:flex;gap:8px}
+.tab{
+ flex:1;padding:11px 5px;border-radius:10px;
+ background:var(--panel);border:1px solid var(--line);
+ color:#b9c7df;font-size:12px;
+}
+.tab.active{background:#183d68;border-color:var(--blue);color:white}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.card{
+ position:relative;background:linear-gradient(145deg,#17243a,#101827);
+ border:1px solid var(--line);border-radius:15px;padding:14px;
+ min-width:0;
+}
+.card-top{display:flex;justify-content:space-between;align-items:center}
+.gem{
+ width:43px;height:43px;border-radius:13px;
+ display:grid;place-items:center;font-size:25px;
+ background:#1c3456;
+}
+.tag{
+ font-size:9px;color:#8ecbff;background:#1b3555;
+ padding:5px 7px;border-radius:7px;
+}
+.card h4{font-size:15px;margin:13px 0 5px}
+.card .desc{font-size:11px;color:var(--muted);margin:0}
+.price{font-weight:800;color:#69bdff;font-size:16px;margin-top:13px}
+.price small{font-size:10px;color:var(--muted);font-weight:400}
+.buy{
+ width:100%;border:0;border-radius:9px;padding:11px;
+ margin-top:12px;color:white;font-size:11px;font-weight:800;
+ background:linear-gradient(90deg,#267ee8,#7251e9);
+}
+.buy:active{transform:scale(.98)}
+.empty{
+ grid-column:span 2;text-align:center;color:var(--muted);
+ padding:25px 10px;font-size:13px;
+}
+.info{
+ background:var(--panel);border:1px solid var(--line);
+ border-radius:14px;padding:15px;margin-top:22px;
+}
+.info h4{margin:0 0 9px;font-size:14px}
+.info p{margin:0;color:var(--muted);font-size:12px;line-height:1.7}
+.bottom{
+ position:fixed;bottom:0;left:0;right:0;
+ background:#0d1422ee;border-top:1px solid var(--line);
+ display:flex;justify-content:center;z-index:5;
+ backdrop-filter:blur(12px);
+}
+.bottom-inner{
+ width:100%;max-width:720px;display:flex;
+ justify-content:space-around;padding:10px 5px;
+}
+.nav-btn{
+ border:0;background:none;color:#94a5c2;
+ font-size:11px;padding:5px 12px;
+}
+.nav-btn b{display:block;font-size:19px;margin-bottom:4px}
+.nav-btn.active{color:#67baff}
+.modal-bg{
+ display:none;position:fixed;inset:0;background:#000b;
+ z-index:10;align-items:flex-end;justify-content:center;
+}
+.modal-bg.show{display:flex}
+.modal{
+ width:100%;max-width:560px;background:#111b2c;
+ border:1px solid #304363;border-radius:22px 22px 0 0;
+ padding:22px;max-height:88vh;overflow:auto;
+}
+.modal-head{display:flex;justify-content:space-between;align-items:center}
+.modal-head h3{margin:0;font-size:18px}
+.close{
+ background:#25334b;border:0;color:white;
+ width:34px;height:34px;border-radius:10px;font-size:18px;
+}
+.field{margin-top:15px}
+.field label{display:block;font-size:12px;color:#aebbd2;margin-bottom:7px}
+.field input{
+ width:100%;padding:13px;border-radius:10px;
+ border:1px solid var(--line);background:#0b1321;color:white;
+ outline:none;
+}
+.field input:focus{border-color:var(--blue)}
+.summary{
+ margin-top:16px;padding:13px;border-radius:11px;
+ background:#192942;font-size:13px;line-height:1.8;
+}
+.primary{
+ width:100%;padding:14px;border:0;border-radius:11px;
+ color:white;font-weight:bold;margin-top:16px;
+ background:linear-gradient(90deg,#267ee8,#7251e9);
+}
+.cart-row{
+ display:flex;justify-content:space-between;gap:10px;
+ padding:12px 0;border-bottom:1px solid var(--line);
+ font-size:13px;
+}
+.remove{background:none;border:0;color:#ff8585}
+@media(min-width:600px){
+ .grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+ <div class="logo">💎 FEYZO <span>MLBB</span></div>
+ <div class="header-actions">
+  <button class="icon-btn" onclick="openCart()">🛒 <span id="cartCount">0</span></button>
+  <button class="icon-btn" onclick="showProfile()">👤</button>
+ </div>
+</header>
+
+<section class="hero">
+ <div>
+  <small>FEYZO DIAMOND STORE</small>
+  <h2>Mobile Legends<br>Top Up</h2>
+  <p>Olmoslar va maxsus passlar<br>bir joyda.</p>
+ </div>
+ <div class="hero-art">💎</div>
+</section>
+
+<div class="section-title">
+ <h3>🔎 Mahsulot qidirish</h3>
+ <span class="muted">FEYZO STORE</span>
+</div>
+<input class="search" id="search" placeholder="Masalan: 86 Diamonds..." oninput="renderProducts()">
+
+<div class="section-title"><h3>🌍 Hudud</h3></div>
+<div class="regions" id="regions">
+ <button class="region active" onclick="chooseRegion(this)">🌐 Global</button>
+ <button class="region" onclick="chooseRegion(this)">🇷🇺 Russia</button>
+ <button class="region" onclick="chooseRegion(this)">🇹🇷 Turkey</button>
+ <button class="region" onclick="chooseRegion(this)">🇲🇾 Malaysia</button>
+ <button class="region" onclick="chooseRegion(this)">🇮🇩 Indonesia</button>
+</div>
+
+<div class="section-title">
+ <h3>💎 Katalog</h3>
+ <span class="muted" id="productCount"></span>
+</div>
+<div class="tabs">
+ <button class="tab active" onclick="chooseTab('diamond',this)">💎 Olmoslar</button>
+ <button class="tab" onclick="chooseTab('pass',this)">🎟️ Passlar</button>
+ <button class="tab" onclick="chooseTab('all',this)">Hammasi</button>
+</div>
+
+<div style="height:13px"></div>
+<div class="grid" id="products"></div>
+
+<section class="info">
+ <h4>🛡️ FEYZO MLBB haqida</h4>
+ <p>Buyurtma berishdan oldin hududingizni tekshiring. Xarid uchun o‘yin ID va Server ID talab qilinadi. Narxlar va yetkazib berish shartlari tasdiqlangandan keyin buyurtma qabul qilinadi.</p>
+</section>
+</div>
+
+<div class="bottom">
+ <div class="bottom-inner">
+  <button class="nav-btn active" onclick="goHome()"><b>⌂</b>Bosh sahifa</button>
+  <button class="nav-btn" onclick="openCart()"><b>🛒</b>Savatcha</button>
+  <button class="nav-btn" onclick="showProfile()"><b>♙</b>Profil</button>
+  <button class="nav-btn" onclick="showSupport()"><b>✉</b>Yordam</button>
+ </div>
+</div>
+
+<div class="modal-bg" id="modalBg" onclick="backgroundClose(event)">
+ <div class="modal">
+  <div class="modal-head">
+   <h3 id="modalTitle">Buyurtma</h3>
+   <button class="close" onclick="closeModal()">×</button>
+  </div>
+  <div id="modalContent"></div>
+ </div>
+</div>
+
+<script>
+const products=[
+ {id:1,name:"86 Diamonds",type:"diamond",price:14100,desc:"86 ta olmos",tag:"POPULAR"},
+ {id:2,name:"172 Diamonds",type:"diamond",price:28100,desc:"172 ta olmos",tag:"POPULAR"},
+ {id:3,name:"2X Diamonds",type:"diamond",price:null,desc:"Birinchi xarid bonusi",tag:"BONUS"},
+ {id:4,name:"Weekly Pass",type:"pass",price:null,desc:"7 kunlik maxsus pass",tag:"PASS"},
+ {id:5,name:"Twilight Pass",type:"pass",price:null,desc:"Twilight maxsus pass",tag:"SPECIAL"},
+ {id:6,name:"Monthly Pass",type:"pass",price:null,desc:"Oylik maxsus pass",tag:"PASS"}
+];
+let activeTab="diamond";
+let cart=[];
+let selectedRegion="Global";
+let selectedProduct=null;
+
+function money(n){
+ return n.toLocaleString("uz-UZ")+" so‘m";
+}
+function renderProducts(){
+ const query=document.getElementById("search").value.toLowerCase();
+ const list=products.filter(p=>
+  (activeTab==="all"||p.type===activeTab)&&
+  p.name.toLowerCase().includes(query)
+ );
+ document.getElementById("productCount").textContent=list.length+" ta mahsulot";
+ document.getElementById("products").innerHTML=list.length?list.map(p=>`
+  <article class="card">
+   <div class="card-top">
+    <div class="gem">${p.type==="pass"?"🎟️":"💎"}</div>
+    <span class="tag">${p.tag}</span>
+   </div>
+   <h4>${p.name}</h4>
+   <p class="desc">${p.desc}</p>
+   <div class="price">${p.price?money(p.price):"Narx belgilanadi"}</div>
+   <button class="buy" onclick="addToCart(${p.id})">SAVATCHAGA QO‘SHISH</button>
+  </article>
+ `).join(""):`<div class="empty">Mahsulot topilmadi.</div>`;
+}
+function chooseTab(tab,btn){
+ activeTab=tab;
+ document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+ btn.classList.add("active");
+ renderProducts();
+}
+function chooseRegion(btn){
+ document.querySelectorAll(".region").forEach(x=>x.classList.remove("active"));
+ btn.classList.add("active");
+ selectedRegion=btn.textContent.trim().replace(/^🌐 |^🇷🇺 |^🇹🇷 |^🇲🇾 |^🇮🇩 /,"");
+}
+function addToCart(id){
+ const p=products.find(x=>x.id===id);
+ if(!p.price){
+  alert("Bu mahsulot narxi hali belgilanmagan. Keyinroq yangilanadi.");
+  return;
+ }
+ cart.push(p);
+ updateCart();
+ alert(p.name+" savatchaga qo‘shildi!");
+}
+function updateCart(){
+ document.getElementById("cartCount").textContent=cart.length;
+}
+function openCart(){
+ document.getElementById("modalTitle").textContent="🛒 Savatcha";
+ let total=cart.reduce((s,p)=>s+p.price,0);
+ let html=cart.length?cart.map((p,i)=>`
+  <div class="cart-row">
+   <span>${p.name}<br><b>${money(p.price)}</b></span>
+   <button class="remove" onclick="removeItem(${i})">O‘chirish</button>
+  </div>`).join("")+
+  `<div class="summary">Jami: <b>${money(total)}</b></div>
+   <button class="primary" onclick="checkout()">DAVOM ETISH</button>`
+  :`<div class="empty">Savatcha hozircha bo‘sh.</div>`;
+ showModal(html);
+}
+function removeItem(i){
+ cart.splice(i,1);updateCart();openCart();
+}
+function checkout(){
+ if(!cart.length)return;
+ selectedProduct=cart[0];
+ document.getElementById("modalTitle").textContent="🎮 O‘yin ma’lumotlari";
+ showModal(`
+  <p class="muted">Buyurtmani davom ettirish uchun ma’lumotlarni kiriting.</p>
+  <div class="field">
+   <label>Mobile Legends User ID</label>
+   <input id="uid" inputmode="numeric" placeholder="Masalan: 123456789">
+  </div>
+  <div class="field">
+   <label>Server ID</label>
+   <input id="sid" inputmode="numeric" placeholder="Masalan: 1234">
+  </div>
+  <div class="summary">
+   Hudud: ${selectedRegion}<br>
+   Mahsulotlar: ${cart.length} ta<br>
+   Jami: <b>${money(cart.reduce((s,p)=>s+p.price,0))}</b>
+  </div>
+  <button class="primary" onclick="confirmOrder()">MA’LUMOTLARNI TEKSHIRISH</button>
+ `);
+}
+function confirmOrder(){
+ const uid=document.getElementById("uid").value.trim();
+ const sid=document.getElementById("sid").value.trim();
+ if(!uid||!sid){alert("UID va Server ID ni kiriting.");return;}
+ showModal(`
+  <div class="summary">
+   <b>Buyurtma ma’lumotlari</b><br>
+   UID: ${uid}<br>
+   Server ID: ${sid}<br>
+   Hudud: ${selectedRegion}<br>
+   Jami: ${money(cart.reduce((s,p)=>s+p.price,0))}
+  </div>
+  <p class="muted">Bu hozircha namoyish rejimi. Haqiqiy buyurtma yuborish uchun Telegram bot va server bilan ulash kerak.</p>
+  <button class="primary" onclick="closeModal()">TUSHUNDIM</button>
+ `);
+}
+function showProfile(){
+ document.getElementById("modalTitle").textContent="👤 Profil";
+ showModal(`<div class="summary">FEYZO MLBB foydalanuvchisi<br>🛒 Savatchadagi mahsulotlar: ${cart.length}<br>🌍 Tanlangan hudud: ${selectedRegion}</div><p class="muted">Telegram profil va buyurtmalar tarixi backend ulangandan keyin ishlaydi.</p>`);
+}
+function showSupport(){
+ document.getElementById("modalTitle").textContent="✉ Yordam";
+ showModal(`<div class="summary">FEYZO MLBB Support<br><br>Administrator bilan bog‘lanish havolasi keyin qo‘shiladi.</div>`);
+}
+function goHome(){
+ closeModal();window.scrollTo({top:0,behavior:"smooth"});
+}
+function showModal(html){
+ document.getElementById("modalContent").innerHTML=html;
+ document.getElementById("modalBg").classList.add("show");
+}
+function closeModal(){
+ document.getElementById("modalBg").classList.remove("show");
+}
+function backgroundClose(e){
+ if(e.target.id==="modalBg")closeModal();
+}
+renderProducts();
+</script>
+</body>
+</html>
